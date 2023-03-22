@@ -2,14 +2,15 @@ package OOP_HW_5;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 public class RobotMap {
 
     private final int n;
     private final int m;
 
-    private final Map<UUID, Robot> robots;
+    private final Map<Long, Robot> robots;
 
     public RobotMap(int n, int m) {
         if (n < 0 || m < 0) {
@@ -38,32 +39,25 @@ public class RobotMap {
     }
 
     private boolean isFree(Point position) {
-        return robots.values().stream()  // Robot
-//                .map(robot -> robot.getPosition())
-                .map(Robot::getPosition) // Point
+        return robots.values().stream()
+                .map(Robot::getPosition)
                 .noneMatch(position::equals);
 
-//        for (Robot value : robots.values()) {
-//            if (value.getPosition().equals(position)) {
-//                return false;
-//            }
-//        }
-//        return true;
     }
 
     public class Robot {
-
-        private final UUID id;
         private Point position;
         private Direction direction;
+        private Long id;
+        public static Long idCounter = 1L;
 
         public Robot(Point position) {
-            this.id = UUID.randomUUID();
+            this.id = idCounter++;
             this.position = position;
             this.direction = Direction.TOP;
         }
 
-        public UUID getId() {
+        public Long getId() {
             return id;
         }
 
@@ -89,7 +83,7 @@ public class RobotMap {
 
         @Override
         public String toString() {
-            return String.format("[%s] %s", id.toString(), position.toString());
+            return String.format("[%d] %s", id, position.toString());
         }
     }
 
@@ -99,4 +93,9 @@ public class RobotMap {
 
     }
 
+    public void getAllRobots() {
+        for (var item : robots.entrySet()) {
+            System.out.printf("ID: %d, Position: %s", item.getKey(), item.getValue().getPosition());
+        }
+    }
 }
