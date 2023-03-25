@@ -2,6 +2,7 @@ package OOP_HW_5;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -21,6 +22,10 @@ public class RobotMap {
         this.robots = new HashMap<>();
     }
 
+    public Robot getRobotById(long id) {
+        return robots.get(id);
+    }
+
     public Robot createRobot(Point position) throws PositionException {
         checkPosition(position);
 
@@ -35,6 +40,14 @@ public class RobotMap {
         }
         if (!isFree(position)) {
             throw new PositionException("Точка " + position + " занята!");
+        }
+    }
+
+    private void checkDirection(String direction) throws DirectionException {
+        try {
+            Direction.valueOf(direction);
+        } catch (IllegalArgumentException e) {
+            throw new DirectionException("Неккоректное значение направления: " + direction);
         }
     }
 
@@ -66,6 +79,7 @@ public class RobotMap {
         }
 
         public void move() throws PositionException {
+
             Point newPosition = switch (direction) {
                 case TOP -> new Point(position.getX() - 1, position.getY());
                 case RIGHT -> new Point(position.getX(), position.getY() + 1);
@@ -77,14 +91,16 @@ public class RobotMap {
             position = newPosition;
         }
 
-        public void changeDirection(Direction direction) {
-            this.direction = direction;
+        public void changeDirection(String direction) throws DirectionException {
+            checkDirection(direction);
+            this.direction = Direction.valueOf(direction) ;
         }
 
         @Override
         public String toString() {
             return String.format("[%d] %s", id, position.toString());
         }
+
     }
 
     public enum Direction {
@@ -93,9 +109,9 @@ public class RobotMap {
 
     }
 
-    public void getAllRobots() {
+    public void printAllRobots() {
         for (var item : robots.entrySet()) {
-            System.out.printf("ID: %d, Position: %s", item.getKey(), item.getValue().getPosition());
+            System.out.printf("ID: %d, Position: %s \n", item.getKey(), item.getValue().getPosition());
         }
     }
 }
