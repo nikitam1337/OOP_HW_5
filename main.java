@@ -1,12 +1,10 @@
 
 package OOP_HW_5;
 
-import java.lang.reflect.InvocationHandler;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.Spliterator;
 
-import OOP_HW_5.RobotMap.Direction;
 
 public class Main {
 
@@ -32,12 +30,14 @@ public class Main {
                 System.out.println("Команда не найдена. Попробуйте еще раз");
             }
         }
-        
-        // List<CommandHandler> handlers = List.of(
-        //         new ChangeDirectionCommandHandler()
-        //         // TODO: 20.03.2023 Вписать свои реализации обработчиков
-        // );
-        // CommandManager commandManager = new CommandManager(map, handlers);
+
+        List<CommandHandler> handlers = List.of(
+                new ChangeDirectionCommandHandler(),
+                new CreateRobotCommandHandler(),
+                new MoveRobotCommandHandler(),
+                new ShowRobotsCommandHandler()
+        );
+        CommandManager commandManager = new CommandManager(map, handlers);
 
         System.out.println("Карта создана успешно!");
         System.out.println("ИГРАЕМ...");
@@ -51,76 +51,15 @@ public class Main {
                             "3. change-direction id LEFT (TOP, RIGHT, BOTTOM, LEFT) - изменить направление движения нужного робота\n"
                             +
                             "4. show-all-robots - для показа списка существующих роботов и их позиций на карте.\n" +
-                            "5. q - завершение программы!\n");
-            RobotMap.Robot robot = null;
+                            "5. exit - завершение программы!\n");
+
             String command = sc.nextLine();
-            // commandManager.handleCommand(command);
-
-            if (command.startsWith("create-robot")) {
-                String[] split = command.split(" ");
-                String[] arguments = Arrays.copyOfRange(split, 1, split.length);
-
-                try {
-                    robot = map.createRobot(new Point(Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1])));
-                    System.out.println("Робот №" + robot.getId() + " успешно создан и помещен на карту.");
-                } catch (PositionException e) {
-                    System.out.println("Во время создания робота случилось исключение: " + e.getMessage() + "." +
-                            " Попробуйте еще раз");
-                }
-            } else if (command.startsWith("move-robot")) {
-                String[] split = command.split(" ");
-                long robotId = Long.parseLong(split[1]);
-                robot = map.getRobotById(robotId);
-
-                if (robot == null) {
-                    System.out.println("Робота с идентификатором " + robotId + "Не найден. Задайте другой id");
-                } else {
-                    try {
-                        robot.move();
-                        System.out.println("Робот №" + robot.getId() + " успешно двигается на шаг вперед.");
-                        // System.out.println(robot);
-                    } catch (PositionException e) {
-                        System.out.println("Во время движения робота случилось исключение: " + e.getMessage() + "." +
-                                " Попробуйте еще раз");
-                    }
-                }
-
-            } else if (command.startsWith("change-direction")) {
-                String[] split = command.split(" ");
-                String[] argumenst = Arrays.copyOfRange(split, 1, split.length);
-                long robotId = Long.parseLong(split[1]);
-                String direction = argumenst[1];
-
-                robot = map.getRobotById(robotId);
-
-                if (robot == null) {
-                    System.out.println("Робота с идентификатором " + robotId + "Не найден. Задайте другой id");
-                } else {
-                    try {
-                        robot.changeDirection(direction);
-                        System.out.println("Робот №" + robot.getId() + " сменил направление на " + direction);
-                        System.out.println(robot);
-                    } catch (DirectionException e) {
-                        System.out.println("Во время смены направления случилось исключение: " + e.getMessage() + "." +
-                                " Попробуйте еще раз");
-                    }
-                }
-
-            } else if (command.equals("show-all-robots")) {
-                System.out.println("Список всех ротботов на карте:");
-                System.out.println();
-                map.printAllRobots();
-
-            } else if (command.equals("q")) {
+            if (command.startsWith("exit")) {
                 System.out.println("Завершение программы....");
                 break;
-
-            } else {
-                System.out.println("Команда не найдена. Попробуйте еще раз");
+            } else{
+                commandManager.handleCommand(command);
             }
         }
-
-        sc.close();
     }
-
 }
