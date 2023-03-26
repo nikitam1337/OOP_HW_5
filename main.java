@@ -32,9 +32,15 @@ public class Main {
                 System.out.println("Команда не найдена. Попробуйте еще раз");
             }
         }
+        
+        // List<CommandHandler> handlers = List.of(
+        //         new ChangeDirectionCommandHandler()
+        //         // TODO: 20.03.2023 Вписать свои реализации обработчиков
+        // );
+        // CommandManager commandManager = new CommandManager(map, handlers);
+
         System.out.println("Карта создана успешно!");
         System.out.println("ИГРАЕМ...");
-        System.out.println(Direction.LEFT);
 
         while (true) {
             System.out.println();
@@ -48,6 +54,8 @@ public class Main {
                             "5. q - завершение программы!\n");
             RobotMap.Robot robot = null;
             String command = sc.nextLine();
+            // commandManager.handleCommand(command);
+
             if (command.startsWith("create-robot")) {
                 String[] split = command.split(" ");
                 String[] arguments = Arrays.copyOfRange(split, 1, split.length);
